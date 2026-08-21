@@ -4,6 +4,13 @@ void main() {
   runApp(const MyApp());
 }
 
+//Estados de la celda en el tablero
+enum CellType {
+  voidCell, //Fuera de limites jugables(esquinas 2x2)
+  emptyHole, //Casilla jugable desocupada
+  occupiedPeg, //Casilla jugable con clavija presente
+}
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -20,6 +27,22 @@ class MyApp extends StatelessWidget {
 //Scaffold
 class PegSolitaireScreen extends StatelessWidget {
   const PegSolitaireScreen({Key? key}) : super(key: key);
+
+  static const int gridSize = 7;
+  static const int totalCells = gridSize * gridSize; //49 casillas
+
+  //Determinar el tipo de celda segun sus cordenadas matriciales (row, col)
+  CellType _getCellType(int row, int col) {
+    //Esquinas 2x2 no jugables en el tablero ingles estandar
+    final bool isCorner = (row < 2 || row > 4) && (col < 2 || col > 4);
+
+    if (isCorner) {
+      return CellType.voidCell;
+    }
+
+    return CellType
+        .occupiedPeg; //El resto de las 33 posiciones aparecen ocupadas.
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,6 +91,11 @@ class PegSolitaireScreen extends StatelessWidget {
             ),
             itemCount: 49, // 7x7 = 49 celdas
             itemBuilder: (context, index) {
+              //Convertir el indice en coordenadas matriciales
+              final int row = index ~/ gridSize;
+              final int col = index % gridSize;
+              final CellType cellType = _getCellType(row, col);
+
               return Container(
                 decoration: BoxDecoration(
                   color: Colors.grey[400],
@@ -75,13 +103,25 @@ class PegSolitaireScreen extends StatelessWidget {
                 ),
 
                 child: Center(
-                  child: Text(
-                    '$index', // Muestra el índice de la celda
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  child: cellType == CellType.occupiedPeg
+                      ? Container(
+                          width: 30,
+                          height: 30,
+                          decoration: const BoxDecoration(
+                            color: Colors.blue,
+                            shape: BoxShape.circle,
+                          ),
+                        )
+                      : cellType == CellType.emptyHole
+                      ? Container(
+                          width: 30,
+                          height: 30,
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                          ),
+                        )
+                      : null, //No dibujar nada para voidCell
                 ),
               );
             },
