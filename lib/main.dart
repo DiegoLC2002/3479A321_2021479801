@@ -47,8 +47,8 @@ class PegCell extends StatelessWidget {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.grey[400],
-          border: Border.all(color: Colors.grey[600]!, width: 1.5),
+          color: const Color(0xFFD2A679),
+          border: Border.all(color: const Color(0xFF8B5A2B), width: 1.5),
         ),
 
         child: Center(
@@ -57,7 +57,7 @@ class PegCell extends StatelessWidget {
                   width: 30,
                   height: 30,
                   decoration: const BoxDecoration(
-                    color: Colors.blue,
+                    color: Color(0xFF6B3E26),
                     shape: BoxShape.circle,
                   ),
                 )
@@ -66,7 +66,7 @@ class PegCell extends StatelessWidget {
                   width: 30,
                   height: 30,
                   decoration: const BoxDecoration(
-                    color: Colors.white,
+                    color: Color(0xFF8B5A2B),
                     shape: BoxShape.circle,
                   ),
                 )
@@ -93,6 +93,11 @@ class PegSolitaireScreen extends StatelessWidget {
       return CellType.voidCell;
     }
 
+    //El centro comienza vacio
+    if (row == 3 && col == 3) {
+      return CellType.emptyHole;
+    }
+
     return CellType
         .occupiedPeg; //El resto de las 33 posiciones aparecen ocupadas.
   }
@@ -100,7 +105,16 @@ class PegSolitaireScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Solitario')),
+      appBar: AppBar(
+        title: const Text(
+          'Solitario Ingles',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
+        backgroundColor: const Color(0xFF5D4037),
+        foregroundColor: Colors.white,
+      ),
+
       body: SafeArea(
         // Protege la UI de los bordes del dispositivo
         child: Column(
@@ -108,16 +122,58 @@ class PegSolitaireScreen extends StatelessWidget {
           children: [
             // Área de Status
             Container(
-              height: 60,
-              color: Colors.grey[300],
-              child: const Center(
-                child: Text(
-                  'STATUS: 349 segundos | Piezas restantes: 33',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                ),
+              height: 75,
+              color: const Color(0xFF5D4037),
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'TIEMPO',
+                        style: TextStyle(
+                          color: Colors.white70,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        '349 s',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'PIEZAS',
+                        style: TextStyle(
+                          color: Colors.white70,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        '32',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
-            const Divider(height: 1),
+
+            const Divider(height: 1, thickness: 1),
             // Área de Juego
             Expanded(
               // Expande el tablero para llenar la pantalla
