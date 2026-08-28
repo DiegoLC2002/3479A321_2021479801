@@ -58,7 +58,7 @@ flutter:
 
   # Declaracion de fuentes personalizadas
   fonts:
-    - family: NombreName
+    - family: Wildeast
       fonts:
         - asset: assets/fonts/The Wildeast.ttf
           weight: 700

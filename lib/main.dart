@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_laboratorio/ui/theme/app_theme.dart';
 import 'package:logger/logger.dart';
 
 import 'core/enums/cell_type.dart';
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Solitario Ingles',
-      theme: ThemeData(primarySwatch: Colors.blue),
+      theme: AppTheme.lightTheme,
       home: PegSolitaireScreen(),
     );
   }

@@ -4,7 +4,7 @@ import 'package:flutter_laboratorio/core/enums/cell_type.dart';
 import '../widgets/peg_cell.dart';
 
 class PegSolitaireScreen extends StatelessWidget {
-  const PegSolitaireScreen({Key? key}) : super(key: key);
+  const PegSolitaireScreen({super.key});
 
   static const int gridSize = 7;
   static const int totalCells = gridSize * gridSize; //49 casillas
@@ -36,8 +36,8 @@ class PegSolitaireScreen extends StatelessWidget {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
-        backgroundColor: const Color(0xFF5D4037),
-        foregroundColor: Colors.white,
+        //backgroundColor: const Color(0xFF5D4037),
+        //foregroundColor: Colors.white,
       ),
 
       body: SafeArea(
