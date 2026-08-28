@@ -64,6 +64,10 @@ class PegCell extends StatelessWidget {
                     color: Color(0xFF6B3E26),
                     shape: BoxShape.circle,
                   ),
+
+                  child: isSelected
+                      ? const Icon(Icons.check, color: Colors.white, size: 20)
+                      : Image.asset('assets/icons/icon_image.jpg'),
                 )
               : cellType == CellType.emptyHole
               ? Container(
