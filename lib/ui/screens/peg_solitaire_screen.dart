@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_laboratorio/core/enums/cell_type.dart';
 
 import '../widgets/peg_cell.dart';
+import '../screens/rules_screen.dart';
+
+import 'package:logger/logger.dart';
+
+var logger = Logger(printer: PrettyPrinter());
 
 class PegSolitaireScreen extends StatelessWidget {
   const PegSolitaireScreen({super.key});
@@ -38,6 +43,20 @@ class PegSolitaireScreen extends StatelessWidget {
         centerTitle: true,
         //backgroundColor: const Color(0xFF5D4037),
         //foregroundColor: Colors.white,
+
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.help_outline),
+            tooltip: 'Reglas del juego',
+            onPressed: () {
+              logger.i('Navegando a RulesScreen desde PegSolitaireScreen');
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const RulesScreen()),
+              );
+            },
+          ),
+        ],
       ),
 
       body: SafeArea(
