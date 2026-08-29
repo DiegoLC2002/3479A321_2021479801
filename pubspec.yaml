@@ -54,7 +54,7 @@ flutter:
 
   assets:
     - assets/images/Fondo_madera.jpg
-    - assets/icons/icon_image.jpg
+    - assets/icons/icon_image.png
 
   # Declaracion de fuentes personalizadas
   fonts:
