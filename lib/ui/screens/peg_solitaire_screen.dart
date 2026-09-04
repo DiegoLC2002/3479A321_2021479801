@@ -5,9 +5,19 @@ import '../widgets/peg_cell.dart';
 import '../screens/rules_screen.dart';
 import '../screens/about_screen.dart';
 
+import 'package:flutter_laboratorio/models/foundation.dart';
+
 import 'package:logger/logger.dart';
 
 var logger = Logger(printer: PrettyPrinter());
+GameRecord _lastGameRecord = GameRecord(
+  id: '007',
+  date: DateTime(2026, 9, 7, 17, 30),
+  remainingPegs: 5,
+  totalMoves: 18,
+  durationSeconds: 90,
+  isVictory: true,
+);
 
 class PegSolitaireScreen extends StatefulWidget {
   const PegSolitaireScreen({super.key});
@@ -194,6 +204,11 @@ class _PegSolitaireScreenState extends State<PegSolitaireScreen> {
               final CellType cellType = _getCellType(row, col);
 
               final bool isSelected = selectedRow == row && selectedCol == col;
+
+              logger.i(
+                "Último registro de juego:Piezas restantes ${_lastGameRecord.remainingPegs}, "
+                "${_lastGameRecord.durationSeconds} segundos jugados",
+              );
 
               return PegCell(
                 row: row,
