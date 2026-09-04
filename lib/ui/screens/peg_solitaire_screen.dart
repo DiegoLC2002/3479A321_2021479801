@@ -6,18 +6,17 @@ import '../screens/rules_screen.dart';
 import '../screens/about_screen.dart';
 
 import 'package:flutter_laboratorio/models/foundation.dart';
-
 import 'package:logger/logger.dart';
 
 var logger = Logger(printer: PrettyPrinter());
-GameRecord _lastGameRecord = GameRecord(
+/*GameRecord _lastGameRecord = GameRecord(
   id: '007',
   date: DateTime(2026, 9, 7, 17, 30),
   remainingPegs: 5,
   totalMoves: 18,
   durationSeconds: 90,
   isVictory: true,
-);
+);*/
 
 class PegSolitaireScreen extends StatefulWidget {
   const PegSolitaireScreen({super.key});
@@ -51,22 +50,23 @@ class _PegSolitaireScreenState extends State<PegSolitaireScreen> {
         .occupiedPeg; //El resto de las 33 posiciones aparecen ocupadas.
   }
 
-  void selectCell(int row, int col, CellType cellType) {
-    // Solo se pueden seleccionar clavijas.
-    if (cellType != CellType.occupiedPeg) {
+  void _handleCellTapped(int row, int col, CellType type) {
+    // Las celdas fuera del tablero no pueden seleccionarse.
+    if (type == CellType.voidCell) {
       return;
     }
 
     setState(() {
-      // Si se toca nuevamente la misma clavija, se deselecciona.
       if (selectedRow == row && selectedCol == col) {
+        logger.d('Deseleccionada celda en: $selectedRow, $selectedCol');
+
         selectedRow = null;
         selectedCol = null;
-        logger.i('Clavija deseleccionada: ($row, $col)');
       } else {
         selectedRow = row;
         selectedCol = col;
-        logger.i('Clavija seleccionada: ($row, $col)');
+
+        logger.d('Seleccionada celda para acción: $row, $col | Tipo: $type');
       }
     });
   }
@@ -205,17 +205,17 @@ class _PegSolitaireScreenState extends State<PegSolitaireScreen> {
 
               final bool isSelected = selectedRow == row && selectedCol == col;
 
-              logger.i(
+              /*logger.i(
                 "Último registro de juego:Piezas restantes ${_lastGameRecord.remainingPegs}, "
                 "${_lastGameRecord.durationSeconds} segundos jugados",
-              );
+              );*/
 
               return PegCell(
                 row: row,
                 col: col,
                 cellType: cellType,
                 isSelected: isSelected,
-                onTap: () => selectCell(row, col, cellType),
+                onTap: () => _handleCellTapped(row, col, cellType),
               );
             },
           ),
