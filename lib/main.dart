@@ -7,6 +7,7 @@ import 'core/enums/cell_type.dart';
 import 'ui/screens/peg_solitaire_screen.dart';
 import 'ui/screens/menu_screen.dart';
 import 'ui/screens/rules_screen.dart';
+import 'ui/screens/history_screen.dart';
 
 var logger = Logger(printer: PrettyPrinter());
 
@@ -27,7 +28,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const MenuScreen(),
         '/game': (context) => PegSolitaireScreen(),
-        //'/history': (context) => const HistoryScreen(),
+        '/history': (context) => const HistoryScreen(),
         '/rules': (context) => const RulesScreen(),
         '/about': (context) => const AboutScreen(),
       },
