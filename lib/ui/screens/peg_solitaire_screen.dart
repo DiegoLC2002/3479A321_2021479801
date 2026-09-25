@@ -21,8 +21,7 @@ class _PegSolitaireScreenState extends State<PegSolitaireScreen> {
   static const int gridSize = 7;
   static const int totalCells = gridSize * gridSize; //49 casillas
 
-  int? selectedRow;
-  int? selectedCol;
+  BoardPosition? selectedPosition;
 
   //Determinar el tipo de celda segun sus cordenadas matriciales (row, col)
   CellType _getCellType(int row, int col) {
@@ -42,23 +41,18 @@ class _PegSolitaireScreenState extends State<PegSolitaireScreen> {
         .occupiedPeg; //El resto de las 33 posiciones aparecen ocupadas.
   }
 
-  void _handleCellTapped(int row, int col, CellType type) {
-    // Las celdas fuera del tablero no pueden seleccionarse.
-    if (type == CellType.voidCell) {
+  void selectCell(BoardPosition position, CellType cellType) {
+    if (cellType != CellType.occupiedPeg) {
       return;
     }
 
     setState(() {
-      if (selectedRow == row && selectedCol == col) {
-        logger.d('Deseleccionada celda en: $selectedRow, $selectedCol');
-
-        selectedRow = null;
-        selectedCol = null;
+      if (selectedPosition == position) {
+        selectedPosition = null;
+        logger.i('Clavija deseleccionada: $position');
       } else {
-        selectedRow = row;
-        selectedCol = col;
-
-        logger.d('Seleccionada celda para acción: $row, $col | Tipo: $type');
+        selectedPosition = position;
+        logger.i('Clavija seleccionada: $position');
       }
     });
   }
@@ -200,14 +194,13 @@ class _PegSolitaireScreenState extends State<PegSolitaireScreen> {
                 position.col,
               );
 
-              final bool isSelected = selectedRow == row && selectedCol == col;
+              final bool isSelected = selectedPosition == position;
 
               return PegCell(
                 position: position,
                 cellType: cellType,
                 isSelected: isSelected,
-                onTap: () =>
-                    _handleCellTapped(position.row, position.col, cellType),
+                onTap: () => selectCell(position, cellType),
               );
             },
           ),
