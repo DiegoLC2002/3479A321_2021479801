@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_laboratorio/core/enums/cell_type.dart';
+import 'package:flutter_laboratorio/models/board_position.dart';
 
 import '../widgets/peg_cell.dart';
 import '../screens/rules_screen.dart';
@@ -192,21 +193,21 @@ class _PegSolitaireScreenState extends State<PegSolitaireScreen> {
               //Convertir el indice en coordenadas matriciales
               final int row = index ~/ gridSize;
               final int col = index % gridSize;
-              final CellType cellType = _getCellType(row, col);
+
+              final position = BoardPosition(row, col);
+              final CellType cellType = _getCellType(
+                position.row,
+                position.col,
+              );
 
               final bool isSelected = selectedRow == row && selectedCol == col;
 
-              /*logger.i(
-                "Último registro de juego:Piezas restantes ${_lastGameRecord.remainingPegs}, "
-                "${_lastGameRecord.durationSeconds} segundos jugados",
-              );*/
-
               return PegCell(
-                row: row,
-                col: col,
+                position: position,
                 cellType: cellType,
                 isSelected: isSelected,
-                onTap: () => _handleCellTapped(row, col, cellType),
+                onTap: () =>
+                    _handleCellTapped(position.row, position.col, cellType),
               );
             },
           ),
