@@ -23,9 +23,32 @@ class PegSolitaireViewModel extends ChangeNotifier {
   bool get isGameOver => _isGameOver;
   bool get isVictory => _isVictory;
 
+  _isValidMove(BoardPosition from, BoardPosition to) {
+    final int rowDelta = (from.row - to.row).abs();
+    final int colDelta = (from.col - to.col).abs();
+
+    // 1. Debe ser un salto ortogonal estricto de distancia 2
+    final bool isOrthogonalTwoStep =
+        (rowDelta == 2 && colDelta == 0) || (rowDelta == 0 && colDelta == 2);
+
+    if (!isOrthogonalTwoStep) return false;
+
+    // 2. El destino debe ser un hueco vacío
+    if (_board[to.row][to.col] != CellType.emptyHole) return false;
+
+    // 3. La celda intermedia debe contener una clavija para ser capturada
+    final int midRow = (from.row + to.row) ~/ 2;
+    final int midCol = (from.col + to.col) ~/ 2;
+
+    if (_board[midRow][midCol] != CellType.occupiedPeg) return false;
+
+    return true;
+  }
+
   PegSolitaireViewModel() {
     initializeBoard();
   }
+
   void initializeBoard() {
     _board = List.generate(gridSize, (row) {
       return List.generate(gridSize, (col) {
