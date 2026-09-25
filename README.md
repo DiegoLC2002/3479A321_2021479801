@@ -1,17 +1,16 @@
-# flutter_laboratorio
+## Alcance y Arquitectura (Monolito / Offline)
+- Se espera que la app sea standalone para que funcione por si sola.
+- Respuestas Flutter / SQLite CrossPlatform.
 
-A new Flutter project.
 
-## Getting Started
+## Requerimientos Funcionales (Tablero / Movimientos)
+- Se espera que la app use funcionalidades del dispositivo, como vibración para dar un feedback a los errores del usuario.
+- La aplicación permite al jugador ver una lista con los mejores puntajes alcanzados.
+- El sistema debe poder guardar los puntajes o el mejor puntaje alcanzados por el jugador.
+- El sistema debe tener la capacidad de guardar el estado del tablero en caso de que el usuario salga de la aplicación.
+- El tablero debe ofrecer una retroalimentación visual cuando una de sus fichas disponibles sea seleccionada.
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Restricciones Técnicas / RNF (Hardware / Persistencia)
+- La aplicación no debe tardar mas de 0.5 segundos en cargar su tablero inicial.
+- La aplicacion debe funcionar en cualquier sistema operativo.
