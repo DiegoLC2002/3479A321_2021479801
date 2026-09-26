@@ -32,6 +32,16 @@ class PegSolitaireScreen extends StatelessWidget {
         //Botones
         actions: [
           IconButton(
+            icon: const Icon(Icons.undo_rounded),
+            tooltip: 'Deshacer movimiento',
+            onPressed: vm.canUndo
+                ? () {
+                    context.read<PegSolitaireViewModel>().undoMove();
+                  }
+                : null,
+          ),
+
+          IconButton(
             icon: const Icon(Icons.refresh_rounded),
             tooltip: 'Reiniciar Tablero',
             onPressed: () {

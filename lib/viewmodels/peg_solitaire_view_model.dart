@@ -25,6 +25,10 @@ class PegSolitaireViewModel extends ChangeNotifier {
   int get moveCount => _moveCount;
   bool get isGameOver => _isGameOver;
   bool get isVictory => _isVictory;
+  bool get canUndo => _undoStack.isNotEmpty;
+
+  // Historial de estados anteriores del tablero para deshacer movimientos
+  final List<List<List<CellType>>> _undoStack = [];
 
   bool isCellSelected(BoardPosition position) {
     return _selectedPosition == position;
@@ -119,6 +123,43 @@ class PegSolitaireViewModel extends ChangeNotifier {
     return false;
   }
 
+  //Guardar estado del tablero
+  void _saveBoardSnapshot() {
+    final snapshot = _board.map((row) => List<CellType>.from(row)).toList();
+
+    _undoStack.add(snapshot);
+
+    logger.i(
+      'Estado guardado en Undo Stack. '
+      'Estados disponibles: ${_undoStack.length}',
+    );
+  }
+
+  //Deshacer movimiento realizado
+  void undoMove() {
+    if (_undoStack.isEmpty) {
+      logger.w('No existen movimientos para deshacer.');
+      return;
+    }
+
+    _board = _undoStack.removeLast();
+
+    _remainingPegs++;
+    _moveCount--;
+
+    _selectedPosition = null;
+    _isGameOver = false;
+    _isVictory = false;
+
+    logger.i(
+      'Movimiento deshecho. '
+      'Movimientos: $_moveCount | '
+      'Clavijas: $_remainingPegs',
+    );
+
+    notifyListeners();
+  }
+
   PegSolitaireViewModel() {
     initializeBoard();
   }
@@ -143,6 +184,7 @@ class PegSolitaireViewModel extends ChangeNotifier {
     _moveCount = 0;
     _isGameOver = false;
     _isVictory = false;
+    _undoStack.clear();
     notifyListeners();
   }
 
@@ -186,6 +228,8 @@ class PegSolitaireViewModel extends ChangeNotifier {
     // Transición 1.3: Pulsar sobre un hueco vacío -> Evaluar salto y captura
     if (tappedType == CellType.emptyHole) {
       if (_isValidMove(origin, pos)) {
+        _saveBoardSnapshot();
+
         _executeMove(origin, pos);
         _selectedPosition = null; // Regreso automático a IDLE tras el salto
         _evaluateGameTermination();
