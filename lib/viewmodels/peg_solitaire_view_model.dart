@@ -1,7 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_laboratorio/models/board_position.dart';
+import 'package:logger/logger.dart';
 
 import '../core/enums/cell_type.dart';
+
+var logger = Logger(printer: PrettyPrinter());
 
 class PegSolitaireViewModel extends ChangeNotifier {
   static const int gridSize = 7;
@@ -23,7 +26,7 @@ class PegSolitaireViewModel extends ChangeNotifier {
   bool get isGameOver => _isGameOver;
   bool get isVictory => _isVictory;
 
-  _isValidMove(BoardPosition from, BoardPosition to) {
+  bool _isValidMove(BoardPosition from, BoardPosition to) {
     final int rowDelta = (from.row - to.row).abs();
     final int colDelta = (from.col - to.col).abs();
 
@@ -43,6 +46,73 @@ class PegSolitaireViewModel extends ChangeNotifier {
     if (_board[midRow][midCol] != CellType.occupiedPeg) return false;
 
     return true;
+  }
+
+  void _executeMove(BoardPosition from, BoardPosition to) {
+    final int midRow = (from.row + to.row) ~/ 2;
+    final int midCol = (from.col + to.col) ~/ 2;
+
+    _board[from.row][from.col] = CellType.emptyHole;
+    _board[midRow][midCol] = CellType.emptyHole;
+    _board[to.row][to.col] = CellType.occupiedPeg;
+
+    _remainingPegs--;
+    _moveCount++;
+
+    logger.i(
+      'Salto ejecutado con éxito: $from -> $to | Clavijas restantes: $_remainingPegs',
+    );
+  }
+
+  void _evaluateGameTermination() {
+    // Condición de Victoria: Queda exactamente 1 clavija en el tablero
+    if (_remainingPegs == 1) {
+      _isGameOver = true;
+      _isVictory = true;
+
+      logger.i('¡VICTORIA! Partida completada en $_moveCount movimientos.');
+      return;
+    }
+
+    // No quedan saltos ortogonales válidos
+    if (!_hasValidMovesRemaining()) {
+      _isGameOver = true;
+      _isVictory = false;
+      logger.w('Fin de juego por bloqueo. No existen movimientos válidos.');
+    }
+  }
+
+  /// Algoritmo exhaustivo de detección de estancamiento sobre las 33 casillas jugables.
+  bool _hasValidMovesRemaining() {
+    const List<List<int>> directions = [
+      [-2, 0], // Arriba
+      [2, 0], // Abajo
+      [0, -2], // Izquierda
+      [0, 2], // Derecha
+    ];
+    for (int r = 0; r < gridSize; r++) {
+      for (int c = 0; c < gridSize; c++) {
+        if (_board[r][c] == CellType.occupiedPeg) {
+          final from = BoardPosition(r, c);
+          for (final dir in directions) {
+            final int targetRow = r + dir[0];
+            final int targetCol = c + dir[1];
+            // Validar que el salto potencial no desborde los límites de la matriz
+            if (targetRow >= 0 &&
+                targetRow < gridSize &&
+                targetCol >= 0 &&
+                targetCol < gridSize) {
+              final to = BoardPosition(targetRow, targetCol);
+              if (_board[targetRow][targetCol] != CellType.voidCell &&
+                  _isValidMove(from, to)) {
+                return true; // Existe al menos un movimiento válido en el tablero
+              }
+            }
+          }
+        }
+      }
+    }
+    return false;
   }
 
   PegSolitaireViewModel() {
