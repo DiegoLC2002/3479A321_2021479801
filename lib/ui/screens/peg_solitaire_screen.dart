@@ -182,6 +182,7 @@ class PegSolitaireScreen extends StatelessWidget {
                 position: position,
                 cellType: cellType,
                 isSelected: vm.isCellSelected(position),
+                isValidDestination: vm.isValidDestination(position),
                 onTap: () {
                   context.read<PegSolitaireViewModel>().onCellTapped(position);
                 },

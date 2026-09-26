@@ -34,6 +34,10 @@ class PegSolitaireViewModel extends ChangeNotifier {
     return _selectedPosition == position;
   }
 
+  bool isValidDestination(BoardPosition position) {
+    return getValidDestinations().contains(position);
+  }
+
   bool _isValidMove(BoardPosition from, BoardPosition to) {
     final int rowDelta = (from.row - to.row).abs();
     final int colDelta = (from.col - to.col).abs();
@@ -158,6 +162,42 @@ class PegSolitaireViewModel extends ChangeNotifier {
     );
 
     notifyListeners();
+  }
+
+  //Obtener destinos validos para moverse
+  List<BoardPosition> getValidDestinations() {
+    final List<BoardPosition> destinations = [];
+
+    if (_selectedPosition == null) {
+      return destinations;
+    }
+
+    final BoardPosition origin = _selectedPosition!;
+
+    const List<List<int>> directions = [
+      [-2, 0], // Arriba
+      [2, 0], // Abajo
+      [0, -2], // Izquierda
+      [0, 2], // Derecha
+    ];
+
+    for (final direction in directions) {
+      final int targetRow = origin.row + direction[0];
+      final int targetCol = origin.col + direction[1];
+
+      if (targetRow >= 0 &&
+          targetRow < gridSize &&
+          targetCol >= 0 &&
+          targetCol < gridSize) {
+        final destination = BoardPosition(targetRow, targetCol);
+
+        if (_isValidMove(origin, destination)) {
+          destinations.add(destination);
+        }
+      }
+    }
+
+    return destinations;
   }
 
   PegSolitaireViewModel() {

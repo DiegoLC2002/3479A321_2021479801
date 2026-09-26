@@ -7,6 +7,7 @@ class PegCell extends StatelessWidget {
   final BoardPosition position;
   final CellType cellType;
   final bool isSelected;
+  final bool isValidDestination;
   final VoidCallback? onTap;
 
   const PegCell({
@@ -14,6 +15,7 @@ class PegCell extends StatelessWidget {
     required this.position,
     required this.cellType,
     this.isSelected = false,
+    this.isValidDestination = false,
     this.onTap,
   });
 
@@ -30,9 +32,20 @@ class PegCell extends StatelessWidget {
           border: isPlayable
               ? Border.all(
                   color: isSelected
-                      ? AppTheme.selectedPegColor
+                      ? const Color.fromARGB(255, 251, 255, 0)
+                      : isValidDestination
+                      ? const Color.fromARGB(
+                          255,
+                          0,
+                          255,
+                          8,
+                        ).withValues(alpha: 0.65)
                       : AppTheme.boardBorderColor,
-                  width: isSelected ? 3 : 1.5,
+                  width: isSelected
+                      ? 3
+                      : isValidDestination
+                      ? 2
+                      : 1.5,
                 )
               : null,
         ),
