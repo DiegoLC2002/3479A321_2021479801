@@ -26,6 +26,10 @@ class PegSolitaireViewModel extends ChangeNotifier {
   bool get isGameOver => _isGameOver;
   bool get isVictory => _isVictory;
 
+  bool isCellSelected(BoardPosition position) {
+    return _selectedPosition == position;
+  }
+
   bool _isValidMove(BoardPosition from, BoardPosition to) {
     final int rowDelta = (from.row - to.row).abs();
     final int colDelta = (from.col - to.col).abs();

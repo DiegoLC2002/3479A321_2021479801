@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_laboratorio/ui/screens/about_screen.dart';
 import 'package:flutter_laboratorio/ui/theme/app_theme.dart';
 import 'package:logger/logger.dart';
+import 'package:flutter_laboratorio/viewmodels/peg_solitaire_view_model.dart';
+import 'package:provider/provider.dart';
 
 import 'ui/screens/peg_solitaire_screen.dart';
 import 'ui/screens/menu_screen.dart';
@@ -26,7 +28,11 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => const MenuScreen(),
-        '/game': (context) => PegSolitaireScreen(),
+        '/game': (context) => ChangeNotifierProvider(
+          create: (_) => PegSolitaireViewModel(),
+          child: PegSolitaireScreen(),
+        ),
+
         '/history': (context) => const HistoryScreen(),
         '/rules': (context) => const RulesScreen(),
         '/about': (context) => const AboutScreen(),
