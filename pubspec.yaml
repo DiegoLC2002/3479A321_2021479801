@@ -11,6 +11,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   logger: ^2.7.0
   provider: ^6.1.5+1
+  audioplayers: ^6.8.1
 
 dev_dependencies:
   flutter_test:
@@ -25,6 +26,7 @@ flutter:
   assets:
     - assets/images/Fondo_madera.jpg
     - assets/icons/icon_image.png
+    - assets/audio/
 
   # Declaracion de fuentes personalizadas
   fonts:
