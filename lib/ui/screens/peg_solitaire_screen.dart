@@ -10,6 +10,7 @@ import '../screens/about_screen.dart';
 
 import 'package:provider/provider.dart';
 import 'package:logger/logger.dart';
+import 'package:share_plus/share_plus.dart';
 
 var logger = Logger(printer: PrettyPrinter());
 
@@ -91,6 +92,22 @@ class _PegSolitaireScreenState extends State<PegSolitaireScreen> {
               context.read<PegSolitaireViewModel>().initializeBoard();
             },
           ),
+
+          //Boton de compartir (solo disponible si la partida ha terminado)
+          if (vm.isGameOver)
+            IconButton(
+              icon: const Icon(Icons.share),
+              tooltip: 'Compartir resultado',
+              onPressed: () async {
+                final String message =
+                    '¡He completado una partida de Peg Solitaire en '
+                    '${vm.moveCount} movimientos dejando solo '
+                    '${vm.remainingPegs} piezas!';
+
+                await SharePlus.instance.share(ShareParams(text: message));
+              },
+            ),
+
           IconButton(
             icon: const Icon(Icons.help_outline),
             tooltip: 'Reglas del juego',
