@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_laboratorio/models/board_position.dart';
+import 'package:flutter_laboratorio/services/audio_service.dart';
 import 'package:logger/logger.dart';
 
 import '../core/enums/cell_type.dart';
@@ -71,6 +72,8 @@ class PegSolitaireViewModel extends ChangeNotifier {
     _remainingPegs--;
     _moveCount++;
 
+    AudioService.instance.playJump(); //Reproducir sonido de salto
+
     logger.i(
       'Salto ejecutado con éxito: $from -> $to | Clavijas restantes: $_remainingPegs',
     );
@@ -82,6 +85,8 @@ class PegSolitaireViewModel extends ChangeNotifier {
       _isGameOver = true;
       _isVictory = true;
 
+      AudioService.instance.playGameOver();
+
       logger.i('¡VICTORIA! Partida completada en $_moveCount movimientos.');
       return;
     }
@@ -90,6 +95,9 @@ class PegSolitaireViewModel extends ChangeNotifier {
     if (!_hasValidMovesRemaining()) {
       _isGameOver = true;
       _isVictory = false;
+
+      AudioService.instance.playGameOver(); //Reproducir sonido perder partida
+
       logger.w('Fin de juego por bloqueo. No existen movimientos válidos.');
     }
   }
@@ -246,6 +254,9 @@ class PegSolitaireViewModel extends ChangeNotifier {
     if (_selectedPosition == null) {
       if (tappedType == CellType.occupiedPeg) {
         _selectedPosition = pos;
+
+        AudioService.instance.playSelect(); //Reproducir sonido de seleccionar
+
         notifyListeners();
       }
       return;
@@ -262,6 +273,7 @@ class PegSolitaireViewModel extends ChangeNotifier {
     // Transición 1.2: Pulsar sobre otra clavija propia -> Alternar selección
     if (tappedType == CellType.occupiedPeg) {
       _selectedPosition = pos;
+      AudioService.instance.playSelect(); //Reproducir sonido de seleccionar
       notifyListeners();
       return;
     }
