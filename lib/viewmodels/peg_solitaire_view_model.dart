@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_laboratorio/models/board_position.dart';
 import 'package:flutter_laboratorio/services/audio_service.dart';
 import 'package:logger/logger.dart';
-import 'package:flutter_laboratorio/services/shake_detector_service.dart';
 
 import '../core/enums/cell_type.dart';
 
@@ -14,8 +13,6 @@ class PegSolitaireViewModel extends ChangeNotifier {
   // Estado interno matricial y contadores
   late List<List<CellType>> _board;
   BoardPosition? _selectedPosition;
-
-  ShakeDetectorService? _shakeDetector; //Variable del detector
 
   int _remainingPegs = 0;
   int _moveCount = 0;
@@ -211,28 +208,8 @@ class PegSolitaireViewModel extends ChangeNotifier {
     return destinations;
   }
 
-  //Iniciar prueba de agitación
-  void _initShakeTest() {
-    _shakeDetector = ShakeDetectorService(
-      shakeThreshold: 10.0,
-      onShake: () {
-        logger.i('SHAKE DETECTADO: Reiniciando partida'); //Callback de prueba
-        initializeBoard();
-      },
-    );
-
-    _shakeDetector?.startListening();
-  }
-
-  @override
-  void dispose() {
-    _shakeDetector?.dispose(); //Evitar fugas de memoria al salir
-    super.dispose();
-  }
-
   PegSolitaireViewModel() {
     initializeBoard();
-    _initShakeTest();
   }
 
   void initializeBoard() {

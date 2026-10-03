@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_laboratorio/core/enums/cell_type.dart';
 import 'package:flutter_laboratorio/models/board_position.dart';
 import 'package:flutter_laboratorio/viewmodels/peg_solitaire_view_model.dart';
+import 'package:flutter_laboratorio/services/shake_detector_service.dart';
 
 import '../widgets/peg_cell.dart';
 import '../screens/rules_screen.dart';
@@ -12,8 +13,50 @@ import 'package:logger/logger.dart';
 
 var logger = Logger(printer: PrettyPrinter());
 
-class PegSolitaireScreen extends StatelessWidget {
+class PegSolitaireScreen extends StatefulWidget {
   const PegSolitaireScreen({super.key});
+
+  @override
+  State<PegSolitaireScreen> createState() => _PegSolitaireScreenState();
+}
+
+class _PegSolitaireScreenState extends State<PegSolitaireScreen> {
+  ShakeDetectorService? _shakeDetector;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _shakeDetector = ShakeDetectorService(onShake: _handleShakeEvent);
+
+    _shakeDetector?.startListening();
+  }
+
+  void _handleShakeEvent() {
+    final vm = context.read<PegSolitaireViewModel>();
+    // REGLA DE NEGOCIO: Solo actuar si la partida ha terminado
+    if (vm.isGameOver) {
+      logger.i(
+        'Shake validado: Partida finalizada. Reiniciando tablero automáticamente.',
+      );
+      vm.initializeBoard();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('¡Tablero reiniciado por movimiento físico!'),
+          duration: Duration(seconds: 5),
+        ),
+      );
+    } else {
+      logger.d('Shake ignorado: La partida se encuentra activa.');
+    }
+  }
+
+  @override
+  void dispose() {
+    // Liberación estricta para evitar fugas de memoria al salir de la pantalla
+    _shakeDetector?.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
