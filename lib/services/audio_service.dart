@@ -30,6 +30,7 @@ class AudioService {
     if (!_isInitialized) return;
 
     try {
+      _logger.i('Reproduciendo sonido de seleccionar clavija');
       await _player.play(AssetSource('audio/Sound_Select.mp3'));
     } catch (e) {
       _logger.w('No se pudo reproducir Sound_Select.mp3: $e');
@@ -40,6 +41,7 @@ class AudioService {
     if (!_isInitialized) return;
 
     try {
+      _logger.i('Reproduciendo sonido de saltar clavija');
       await _player.play(AssetSource('audio/Sound_ConfirmJump.mp3'));
     } catch (e) {
       _logger.w('No se pudo reproducir Sound_ConfirmJump.mp3: $e');
@@ -49,6 +51,7 @@ class AudioService {
   Future<void> playGameOver() async {
     if (!_isInitialized) return;
     try {
+      _logger.i('Reproduciendo sonido de termino de partida');
       await _player.play(AssetSource('audio/Sound_EndLose.mp3'));
     } catch (e) {
       _logger.w('No se pudo reproducir Sound_EndLose.mp3: $e');
