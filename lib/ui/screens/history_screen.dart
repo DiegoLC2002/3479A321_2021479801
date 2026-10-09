@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_laboratorio/models/foundation.dart';
+import 'package:flutter_laboratorio/models/game_record.dart';
 
 class HistoryScreen extends StatelessWidget {
   const HistoryScreen({super.key});
