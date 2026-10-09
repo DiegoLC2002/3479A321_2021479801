@@ -29,10 +29,19 @@ class _MenuScreenState extends State<MenuScreen> {
     _logger.i('Agitación inicial: ${service.isShakeEnabled}');
     _logger.i('Mejor puntaje inicial: ${service.bestRemainingPegs}');
 
-    final saved = await service.setSoundEnabled(true);
+    final saved = await service.setSoundEnabled(false);
     _logger.i('Resultado de guardar sonido: $saved');
-
     _logger.i('Sonido después de guardar false: ${service.isSoundEnabled}');
+
+    // Prueba de guardado y lectura de agitación.
+    await service.setShakeEnabled(false);
+    _logger.i('Agitación después de guardar false: ${service.isShakeEnabled}');
+
+    // Prueba de guardado y lectura del mejor puntaje.
+    await service.setBestRemainingPegs(5);
+    _logger.i(
+      'Mejor puntaje después de guardar 5: ${service.bestRemainingPegs}',
+    );
 
     _logger.i('=== FIN DE LA PRUEBA ===');
   }
