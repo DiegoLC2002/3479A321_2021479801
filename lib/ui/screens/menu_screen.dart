@@ -1,7 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class MenuScreen extends StatelessWidget {
+import '../../services/preference_services.dart';
+
+class MenuScreen extends StatefulWidget {
   const MenuScreen({super.key});
+
+  @override
+  State<MenuScreen> createState() => _MenuScreenState();
+}
+
+class _MenuScreenState extends State<MenuScreen> {
+  final Logger _logger = Logger();
+
+  @override
+  void initState() {
+    super.initState();
+    _testPreferences();
+  }
+
+  Future<void> _testPreferences() async {
+    _logger.i('=== PRUEBA DE CAJA BLANCA: PreferencesService ===');
+
+    final service = await PreferencesService.create();
+
+    _logger.i('Sonido inicial: ${service.isSoundEnabled}');
+    _logger.i('Agitación inicial: ${service.isShakeEnabled}');
+    _logger.i('Mejor puntaje inicial: ${service.bestRemainingPegs}');
+
+    final saved = await service.setSoundEnabled(true);
+    _logger.i('Resultado de guardar sonido: $saved');
+
+    _logger.i('Sonido después de guardar false: ${service.isSoundEnabled}');
+
+    _logger.i('=== FIN DE LA PRUEBA ===');
+  }
 
   @override
   Widget build(BuildContext context) {
