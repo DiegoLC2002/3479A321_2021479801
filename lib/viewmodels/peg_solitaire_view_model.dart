@@ -5,6 +5,11 @@ import 'package:logger/logger.dart';
 
 import '../core/enums/cell_type.dart';
 
+import 'package:flutter_laboratorio/models/move_record.dart';
+import 'package:flutter_laboratorio/models/game_record.dart';
+import 'package:flutter_laboratorio/repositories/game_history_repository.dart';
+import 'package:flutter_laboratorio/services/preference_services.dart';
+
 var logger = Logger(printer: PrettyPrinter());
 
 class PegSolitaireViewModel extends ChangeNotifier {
@@ -18,6 +23,10 @@ class PegSolitaireViewModel extends ChangeNotifier {
   int _moveCount = 0;
   bool _isGameOver = false;
   bool _isVictory = false;
+
+  IGameHistoryRepository? _historyRepository;
+  PreferencesService? _preferencesService;
+  final List<MoveRecord> _movesHistory = [];
 
   // Getters inmutables expuestos hacia la UI
   List<List<CellType>> get board => _board;
@@ -72,6 +81,11 @@ class PegSolitaireViewModel extends ChangeNotifier {
     _remainingPegs--;
     _moveCount++;
 
+    //Registrar movimientos en _movesHistory
+    _movesHistory.add(
+      MoveRecord(from: from, to: to, timestamp: DateTime.now()),
+    );
+
     AudioService.instance.playJump(); //Reproducir sonido de salto
 
     logger.i(
@@ -85,6 +99,8 @@ class PegSolitaireViewModel extends ChangeNotifier {
       _isGameOver = true;
       _isVictory = true;
 
+      _persistCompletedGame();
+
       AudioService.instance.playGameOver();
 
       logger.i('¡VICTORIA! Partida completada en $_moveCount movimientos.');
@@ -96,9 +112,35 @@ class PegSolitaireViewModel extends ChangeNotifier {
       _isGameOver = true;
       _isVictory = false;
 
+      _persistCompletedGame();
+
       AudioService.instance.playGameOver(); //Reproducir sonido perder partida
 
       logger.w('Fin de juego por bloqueo. No existen movimientos válidos.');
+    }
+  }
+
+  Future<void> _persistCompletedGame() async {
+    final record = GameRecord(
+      id: 'REC-${DateTime.now().millisecondsSinceEpoch}',
+      date: DateTime.now(),
+      remainingPegs: _remainingPegs,
+      totalMoves: _moveCount,
+      durationSeconds: 0,
+      isVictory: _isVictory,
+      moves: List.unmodifiable(_movesHistory),
+    );
+
+    try {
+      await _historyRepository?.saveGame(record);
+
+      if (_remainingPegs < (_preferencesService?.bestRemainingPegs ?? 32)) {
+        await _preferencesService?.setBestRemainingPegs(_remainingPegs);
+      }
+
+      logger.i('Partida guardada correctamente en el historial.');
+    } catch (e) {
+      logger.e('Error al guardar resumen en ViewModel: $e');
     }
   }
 
@@ -208,7 +250,10 @@ class PegSolitaireViewModel extends ChangeNotifier {
     return destinations;
   }
 
-  PegSolitaireViewModel() {
+  PegSolitaireViewModel({
+    required IGameHistoryRepository this._historyRepository,
+    required PreferencesService this._preferencesService,
+  }) {
     initializeBoard();
   }
 
