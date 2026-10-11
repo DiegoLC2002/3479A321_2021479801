@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_laboratorio/models/game_record.dart';
 import 'package:flutter_laboratorio/repositories/game_history_repository.dart';
 import 'package:flutter_laboratorio/repositories/json_file_history_repository.dart';
+import 'package:flutter_laboratorio/ui/screens/replay_screen.dart';
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});
@@ -70,6 +71,15 @@ class _HistoryScreenState extends State<HistoryScreen> {
               return Card(
                 margin: const EdgeInsets.only(bottom: 12.0),
                 child: ListTile(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ReplayScreen(record: record),
+                      ),
+                    );
+                  },
+
                   leading: Icon(
                     record.isVictory ? Icons.emoji_events : Icons.close,
                     color: record.isVictory ? Colors.green : Colors.red,
