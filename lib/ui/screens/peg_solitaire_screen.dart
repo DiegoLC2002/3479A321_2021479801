@@ -3,6 +3,7 @@ import 'package:flutter_laboratorio/core/enums/cell_type.dart';
 import 'package:flutter_laboratorio/models/board_position.dart';
 import 'package:flutter_laboratorio/viewmodels/peg_solitaire_view_model.dart';
 import 'package:flutter_laboratorio/services/shake_detector_service.dart';
+import 'package:flutter_laboratorio/services/preference_services.dart';
 
 import '../widgets/peg_cell.dart';
 import '../screens/rules_screen.dart';
@@ -90,6 +91,40 @@ class _PegSolitaireScreenState extends State<PegSolitaireScreen> {
             tooltip: 'Reiniciar Tablero',
             onPressed: () {
               context.read<PegSolitaireViewModel>().initializeBoard();
+            },
+          ),
+
+          IconButton(
+            icon: const Icon(Icons.emoji_events),
+            tooltip: 'Consultar puntaje más alto',
+            onPressed: () async {
+              final preferences = await PreferencesService.create();
+              final bestScore = preferences.bestRemainingPegs;
+
+              if (!context.mounted) return;
+
+              showDialog<void>(
+                context: context,
+                builder: (dialogContext) => AlertDialog(
+                  title: const Row(
+                    children: [
+                      Icon(Icons.emoji_events, color: Colors.amber),
+                      SizedBox(width: 8),
+                      Expanded(child: Text('Puntaje más alto')),
+                    ],
+                  ),
+                  content: Text(
+                    'Tu mejor resultado guardado es de '
+                    '$bestScore clavijas restantes.',
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(dialogContext),
+                      child: const Text('Cerrar'),
+                    ),
+                  ],
+                ),
+              );
             },
           ),
 
