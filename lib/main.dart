@@ -12,6 +12,7 @@ import 'ui/screens/peg_solitaire_screen.dart';
 import 'ui/screens/menu_screen.dart';
 import 'ui/screens/rules_screen.dart';
 import 'ui/screens/history_screen.dart';
+import 'ui/screens/preferences_screen.dart';
 
 var logger = Logger(printer: PrettyPrinter());
 
@@ -58,6 +59,7 @@ class MyApp extends StatelessWidget {
         ),
 
         '/history': (context) => const HistoryScreen(),
+        '/preferences': (context) => const PreferencesScreen(),
         '/rules': (context) => const RulesScreen(),
         '/about': (context) => const AboutScreen(),
       },

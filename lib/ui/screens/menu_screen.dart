@@ -56,6 +56,14 @@ class MenuScreen extends StatelessWidget {
             const SizedBox(height: 12),
 
             FilledButton.icon(
+              onPressed: () => Navigator.pushNamed(context, '/preferences'),
+              icon: const Icon(Icons.settings),
+              label: const Text('Preferencias'),
+            ),
+
+            const SizedBox(height: 12),
+
+            FilledButton.icon(
               onPressed: () => Navigator.pushNamed(context, '/rules'),
               icon: const Icon(Icons.help_outline),
               label: const Text('Reglas del Juego'),
