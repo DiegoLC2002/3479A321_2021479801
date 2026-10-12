@@ -3,6 +3,7 @@ import 'package:flutter_laboratorio/models/game_record.dart';
 import 'package:flutter_laboratorio/repositories/game_history_repository.dart';
 import 'package:flutter_laboratorio/repositories/json_file_history_repository.dart';
 import 'package:flutter_laboratorio/ui/screens/replay_screen.dart';
+import 'package:share_plus/share_plus.dart';
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});
@@ -40,7 +41,50 @@ class _HistoryScreenState extends State<HistoryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Historial de Partidas')),
+      appBar: AppBar(
+        title: const Text('Historial de Partidas'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.share),
+            tooltip: 'Exportar respaldo del historial',
+            onPressed: () async {
+              try {
+                final file = await _repository is JsonFileHistoryRepository
+                    ? await (_repository as JsonFileHistoryRepository)
+                          .getHistoryFile()
+                    : null;
+
+                if (!context.mounted) return;
+
+                if (file == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('No existe un historial para exportar.'),
+                    ),
+                  );
+                  return;
+                }
+
+                await SharePlus.instance.share(
+                  ShareParams(
+                    files: [XFile(file.path)],
+                    subject: 'Respaldo de partidas de Solitario Inglés',
+                  ),
+                );
+              } catch (e) {
+                if (!context.mounted) return;
+
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('No se pudo exportar el historial: $e'),
+                  ),
+                );
+              }
+            },
+          ),
+        ],
+      ),
+
       body: FutureBuilder<List<GameRecord>>(
         future: _historyFuture,
         builder: (context, snapshot) {

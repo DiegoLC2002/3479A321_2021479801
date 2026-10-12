@@ -19,6 +19,23 @@ class JsonFileHistoryRepository implements IGameHistoryRepository {
     return File('${directory.path}/$_fileName');
   }
 
+  /// Obtener el archivo JSON del historial para exportarlo.
+  Future<File?> getHistoryFile() async {
+    try {
+      final file = await _resolveLocalFile();
+
+      if (await file.exists()) {
+        return file;
+      }
+
+      _logger.w('No existe un archivo de historial para exportar.');
+      return null;
+    } catch (e) {
+      _logger.e('Error al obtener el archivo de historial: $e');
+      rethrow;
+    }
+  }
+
   @override
   Future<List<GameRecord>> getHistory() async {
     try {
