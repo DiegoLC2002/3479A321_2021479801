@@ -1,6 +1,8 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:logger/logger.dart';
 
+import 'preference_services.dart';
+
 class AudioService {
   static final AudioService instance = AudioService._internal();
 
@@ -26,8 +28,19 @@ class AudioService {
     }
   }
 
+  Future<bool> _isSoundEnabled() async {
+    try {
+      final preferences = await PreferencesService.create();
+      return preferences.isSoundEnabled;
+    } catch (e) {
+      _logger.e('Error al consultar la preferencia de sonido: $e');
+      return true;
+    }
+  }
+
   Future<void> playSelect() async {
     if (!_isInitialized) return;
+    if (!await _isSoundEnabled()) return;
 
     try {
       _logger.i('Reproduciendo sonido de seleccionar clavija');
@@ -39,6 +52,7 @@ class AudioService {
 
   Future<void> playJump() async {
     if (!_isInitialized) return;
+    if (!await _isSoundEnabled()) return;
 
     try {
       _logger.i('Reproduciendo sonido de saltar clavija');
@@ -50,6 +64,8 @@ class AudioService {
 
   Future<void> playGameOver() async {
     if (!_isInitialized) return;
+    if (!await _isSoundEnabled()) return;
+
     try {
       _logger.i('Reproduciendo sonido de termino de partida');
       await _player.play(AssetSource('audio/Sound_EndLose.mp3'));

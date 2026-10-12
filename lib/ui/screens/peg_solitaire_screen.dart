@@ -34,14 +34,27 @@ class _PegSolitaireScreenState extends State<PegSolitaireScreen> {
     _shakeDetector?.startListening();
   }
 
-  void _handleShakeEvent() {
+  void _handleShakeEvent() async {
+    final preferences = await PreferencesService.create();
+
+    if (!mounted) return;
+
+    // Solo actuar si la agitación está habilitada.
+    if (!preferences.isShakeEnabled) {
+      logger.d('Shake ignorado: La agitación está desactivada.');
+      return;
+    }
+
     final vm = context.read<PegSolitaireViewModel>();
+
     // REGLA DE NEGOCIO: Solo actuar si la partida ha terminado
     if (vm.isGameOver) {
       logger.i(
         'Shake validado: Partida finalizada. Reiniciando tablero automáticamente.',
       );
+
       vm.initializeBoard();
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('¡Tablero reiniciado por movimiento físico!'),
