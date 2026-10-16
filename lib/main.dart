@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_laboratorio/ui/screens/about_screen.dart';
 import 'package:flutter_laboratorio/ui/theme/app_theme.dart';
-import 'package:logger/logger.dart';
 import 'package:flutter_laboratorio/viewmodels/peg_solitaire_view_model.dart';
 import 'package:flutter_laboratorio/services/preference_services.dart';
 import 'package:flutter_laboratorio/repositories/game_history_repository.dart';
@@ -14,13 +13,13 @@ import 'ui/screens/rules_screen.dart';
 import 'ui/screens/history_screen.dart';
 import 'ui/screens/preferences_screen.dart';
 
-var logger = Logger(printer: PrettyPrinter());
+import 'package:flutter_laboratorio/core/utils/app_logger.dart';
 
 Future<void> main() async {
   // Asegurar la vinculación con el canal de plataforma nativo
   WidgetsFlutterBinding.ensureInitialized();
 
-  logger.d('Log message with 2 methods');
+  AppLogger.debug('Log message with 2 methods');
 
   // Resolver dependencias de forma asíncrona
   final preferencesService = await PreferencesService.create();

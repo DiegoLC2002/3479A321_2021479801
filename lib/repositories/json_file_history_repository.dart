@@ -1,17 +1,16 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../models/game_record.dart';
 import 'game_history_repository.dart';
 
+import 'package:flutter_laboratorio/core/utils/app_logger.dart';
+
 /// Implementación del repositorio respaldada en el sistema de archivos (JSON).
 class JsonFileHistoryRepository implements IGameHistoryRepository {
   static const String _fileName = 'games_history.json';
-
-  final Logger _logger = Logger();
 
   /// Resuelve la ruta del archivo dentro del almacenamiento privado de la aplicación.
   Future<File> _resolveLocalFile() async {
@@ -28,10 +27,10 @@ class JsonFileHistoryRepository implements IGameHistoryRepository {
         return file;
       }
 
-      _logger.w('No existe un archivo de historial para exportar.');
+      AppLogger.warning('No existe un archivo de historial para exportar.');
       return null;
     } catch (e) {
-      _logger.e('Error al obtener el archivo de historial: $e');
+      AppLogger.error('Error al obtener el archivo de historial: $e');
       rethrow;
     }
   }
@@ -42,7 +41,7 @@ class JsonFileHistoryRepository implements IGameHistoryRepository {
       final file = await _resolveLocalFile();
 
       if (!await file.exists()) {
-        _logger.i(
+        AppLogger.info(
           'Historial inexistente en disco. Retornando colección vacía.',
         );
         return [];
@@ -60,13 +59,17 @@ class JsonFileHistoryRepository implements IGameHistoryRepository {
           .map((item) => GameRecord.fromJson(item as Map<String, dynamic>))
           .toList();
     } on FileSystemException catch (e) {
-      _logger.e('Error de bajo nivel en el sistema de archivos: ${e.message}');
+      AppLogger.error(
+        'Error de bajo nivel en el sistema de archivos: ${e.message}',
+      );
       return [];
     } on FormatException catch (e) {
-      _logger.e('Corrupción detectada en games_history.json: ${e.message}');
+      AppLogger.error(
+        'Corrupción detectada en games_history.json: ${e.message}',
+      );
       return [];
     } catch (e) {
-      _logger.e('Excepción no controlada al leer historial: $e');
+      AppLogger.error('Excepción no controlada al leer historial: $e');
       return [];
     }
   }
@@ -90,9 +93,9 @@ class JsonFileHistoryRepository implements IGameHistoryRepository {
       // Escribir el contenido en el archivo.
       await file.writeAsString(encoded, mode: FileMode.write, flush: true);
 
-      _logger.i('Partida ${record.id} persistida con éxito en disco.');
+      AppLogger.info('Partida ${record.id} persistida con éxito en disco.');
     } catch (e) {
-      _logger.e('Fallo al persistir partida en archivo local: $e');
+      AppLogger.error('Fallo al persistir partida en archivo local: $e');
       rethrow;
     }
   }
@@ -104,10 +107,10 @@ class JsonFileHistoryRepository implements IGameHistoryRepository {
 
       if (await file.exists()) {
         await file.delete();
-        _logger.i('Archivo de historial purgado exitosamente.');
+        AppLogger.info('Archivo de historial purgado exitosamente.');
       }
     } catch (e) {
-      _logger.e('Error al purgar historial: $e');
+      AppLogger.error('Error al purgar historial: $e');
     }
   }
 }

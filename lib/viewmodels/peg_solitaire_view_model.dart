@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_laboratorio/models/board_position.dart';
 import 'package:flutter_laboratorio/services/audio_service.dart';
-import 'package:logger/logger.dart';
 
 import '../core/enums/cell_type.dart';
 
@@ -9,8 +8,7 @@ import 'package:flutter_laboratorio/models/move_record.dart';
 import 'package:flutter_laboratorio/models/game_record.dart';
 import 'package:flutter_laboratorio/repositories/game_history_repository.dart';
 import 'package:flutter_laboratorio/services/preference_services.dart';
-
-var logger = Logger(printer: PrettyPrinter());
+import 'package:flutter_laboratorio/core/utils/app_logger.dart';
 
 class PegSolitaireViewModel extends ChangeNotifier {
   static const int gridSize = 7;
@@ -88,7 +86,7 @@ class PegSolitaireViewModel extends ChangeNotifier {
 
     AudioService.instance.playJump(); //Reproducir sonido de salto
 
-    logger.i(
+    AppLogger.info(
       'Salto ejecutado con éxito: $from -> $to | Clavijas restantes: $_remainingPegs',
     );
   }
@@ -103,7 +101,9 @@ class PegSolitaireViewModel extends ChangeNotifier {
 
       AudioService.instance.playGameOver();
 
-      logger.i('¡VICTORIA! Partida completada en $_moveCount movimientos.');
+      AppLogger.info(
+        '¡VICTORIA! Partida completada en $_moveCount movimientos.',
+      );
       return;
     }
 
@@ -116,7 +116,9 @@ class PegSolitaireViewModel extends ChangeNotifier {
 
       AudioService.instance.playGameOver(); //Reproducir sonido perder partida
 
-      logger.w('Fin de juego por bloqueo. No existen movimientos válidos.');
+      AppLogger.warning(
+        'Fin de juego por bloqueo. No existen movimientos válidos.',
+      );
     }
   }
 
@@ -138,9 +140,9 @@ class PegSolitaireViewModel extends ChangeNotifier {
         await _preferencesService?.setBestRemainingPegs(_remainingPegs);
       }
 
-      logger.i('Partida guardada correctamente en el historial.');
+      AppLogger.info('Partida guardada correctamente en el historial.');
     } catch (e) {
-      logger.e('Error al guardar resumen en ViewModel: $e');
+      AppLogger.error('Error al guardar resumen en ViewModel: $e');
     }
   }
 
@@ -183,7 +185,7 @@ class PegSolitaireViewModel extends ChangeNotifier {
 
     _undoStack.add(snapshot);
 
-    logger.i(
+    AppLogger.info(
       'Estado guardado en Undo Stack. '
       'Estados disponibles: ${_undoStack.length}',
     );
@@ -192,7 +194,7 @@ class PegSolitaireViewModel extends ChangeNotifier {
   //Deshacer movimiento realizado
   void undoMove() {
     if (_undoStack.isEmpty) {
-      logger.w('No existen movimientos para deshacer.');
+      AppLogger.warning('No existen movimientos para deshacer.');
       return;
     }
 
@@ -205,7 +207,7 @@ class PegSolitaireViewModel extends ChangeNotifier {
     _isGameOver = false;
     _isVictory = false;
 
-    logger.i(
+    AppLogger.info(
       'Movimiento deshecho. '
       'Movimientos: $_moveCount | '
       'Clavijas: $_remainingPegs',
@@ -332,7 +334,7 @@ class PegSolitaireViewModel extends ChangeNotifier {
         _evaluateGameTermination();
         notifyListeners();
       } else {
-        logger.w(
+        AppLogger.warning(
           'Reglas: Intento de salto inválido rechazado desde $origin hacia $pos',
         );
       }

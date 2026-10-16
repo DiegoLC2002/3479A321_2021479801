@@ -1,10 +1,9 @@
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:logger/logger.dart';
+import 'package:flutter_laboratorio/core/utils/app_logger.dart';
 
 class PreferencesService {
   //Definicion de variables para persistencia de sonido, agitación y puntaje
   final SharedPreferences _prefs;
-  final Logger _logger = Logger();
 
   PreferencesService(this._prefs);
 
@@ -27,17 +26,17 @@ class PreferencesService {
 
   // Guardar las preferencias.
   Future<bool> setSoundEnabled(bool enabled) async {
-    _logger.i('PreferencesService: Sonido configurado en $enabled');
+    AppLogger.info('PreferencesService: Sonido configurado en $enabled');
     return await _prefs.setBool(_keySoundEnabled, enabled);
   }
 
   Future<bool> setShakeEnabled(bool enabled) async {
-    _logger.i('PreferencesService: Agitación configurada en $enabled');
+    AppLogger.info('PreferencesService: Agitación configurada en $enabled');
     return await _prefs.setBool(_keyShakeEnabled, enabled);
   }
 
   Future<bool> setBestRemainingPegs(int score) async {
-    _logger.i('PreferencesService: Mejor puntaje configurado en $score');
+    AppLogger.info('PreferencesService: Mejor puntaje configurado en $score');
     return await _prefs.setInt(_keyBestScore, score);
   }
 }

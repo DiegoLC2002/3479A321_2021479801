@@ -10,10 +10,8 @@ import '../screens/rules_screen.dart';
 import '../screens/about_screen.dart';
 
 import 'package:provider/provider.dart';
-import 'package:logger/logger.dart';
 import 'package:share_plus/share_plus.dart';
-
-var logger = Logger(printer: PrettyPrinter());
+import 'package:flutter_laboratorio/core/utils/app_logger.dart';
 
 class PegSolitaireScreen extends StatefulWidget {
   const PegSolitaireScreen({super.key});
@@ -41,7 +39,7 @@ class _PegSolitaireScreenState extends State<PegSolitaireScreen> {
 
     // Solo actuar si la agitación está habilitada.
     if (!preferences.isShakeEnabled) {
-      logger.d('Shake ignorado: La agitación está desactivada.');
+      AppLogger.debug('Shake ignorado: La agitación está desactivada.');
       return;
     }
 
@@ -49,7 +47,7 @@ class _PegSolitaireScreenState extends State<PegSolitaireScreen> {
 
     // REGLA DE NEGOCIO: Solo actuar si la partida ha terminado
     if (vm.isGameOver) {
-      logger.i(
+      AppLogger.info(
         'Shake validado: Partida finalizada. Reiniciando tablero automáticamente.',
       );
 
@@ -62,7 +60,7 @@ class _PegSolitaireScreenState extends State<PegSolitaireScreen> {
         ),
       );
     } else {
-      logger.d('Shake ignorado: La partida se encuentra activa.');
+      AppLogger.debug('Shake ignorado: La partida se encuentra activa.');
     }
   }
 
@@ -160,7 +158,9 @@ class _PegSolitaireScreenState extends State<PegSolitaireScreen> {
             icon: const Icon(Icons.help_outline),
             tooltip: 'Reglas del juego',
             onPressed: () {
-              logger.i('Navegando a RulesScreen desde PegSolitaireScreen');
+              AppLogger.info(
+                'Navegando a RulesScreen desde PegSolitaireScreen',
+              );
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const RulesScreen()),
@@ -173,7 +173,9 @@ class _PegSolitaireScreenState extends State<PegSolitaireScreen> {
             icon: const Icon(Icons.info_outline),
             tooltip: 'Sobre el proyecto',
             onPressed: () {
-              logger.i('Navegando a AboutScreen desde PegSolitaireScreen');
+              AppLogger.info(
+                'Navegando a AboutScreen desde PegSolitaireScreen',
+              );
 
               Navigator.push(
                 context,
@@ -261,7 +263,7 @@ class _PegSolitaireScreenState extends State<PegSolitaireScreen> {
   }
 
   Widget _gameBoard(BuildContext context, PegSolitaireViewModel vm) {
-    logger.i('Construyendo el tablero de juego');
+    AppLogger.info('Construyendo el tablero de juego');
 
     return Center(
       child: Padding(
