@@ -24,8 +24,8 @@ class PegSolitaireViewModel extends ChangeNotifier {
   bool _isGameOver = false;
   bool _isVictory = false;
 
-  IGameHistoryRepository? _historyRepository;
-  PreferencesService? _preferencesService;
+  final IGameHistoryRepository? _historyRepository;
+  final PreferencesService? _preferencesService;
   final List<MoveRecord> _movesHistory = [];
 
   // Getters inmutables expuestos hacia la UI

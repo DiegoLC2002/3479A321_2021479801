@@ -49,9 +49,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
             tooltip: 'Exportar respaldo del historial',
             onPressed: () async {
               try {
-                final file = await _repository is JsonFileHistoryRepository
-                    ? await (_repository as JsonFileHistoryRepository)
-                          .getHistoryFile()
+                final file = _repository is JsonFileHistoryRepository
+                    ? await _repository.getHistoryFile()
                     : null;
 
                 if (!context.mounted) return;
