@@ -1,4 +1,4 @@
-// This is a basic Flutter widget test.
+/* This is a basic Flutter widget test.
 //
 // To perform an interaction with a widget in your test, use the WidgetTester
 // utility in the flutter_test package. For example, you can send tap and scroll
@@ -26,5 +26,24 @@ void main() {
     // Verify that our counter has incremented.
     expect(find.text('0'), findsNothing);
     expect(find.text('1'), findsOneWidget);
+  });
+}
+*/
+
+import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_laboratorio/main.dart';
+
+void main() {
+  testWidgets('La aplicación muestra el menú principal', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(const MyApp());
+
+    expect(find.text('Solitario Inglés'), findsWidgets);
+    expect(find.text('Selecciona una opción para comenzar'), findsOneWidget);
+    expect(find.text('Nuevo Juego'), findsOneWidget);
+    expect(find.text('Historial'), findsOneWidget);
+    expect(find.text('Reglas del Juego'), findsOneWidget);
+    expect(find.text('Sobre el Proyecto'), findsOneWidget);
   });
 }
