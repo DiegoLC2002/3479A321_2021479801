@@ -1,4 +1,4 @@
-package com.example.flutter_laboratorio
+package cl.lircayhub.pegsolitaire
 
 import io.flutter.embedding.android.FlutterActivity
 
