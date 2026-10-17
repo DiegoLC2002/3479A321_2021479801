@@ -25,6 +25,7 @@ class PegSolitaireViewModel extends ChangeNotifier {
 
   final IGameHistoryRepository? _historyRepository;
   final PreferencesService? _preferencesService;
+  final AudioService? _audioService;
   final List<MoveRecord> _movesHistory = [];
 
   // Getters inmutables expuestos hacia la UI
@@ -85,7 +86,7 @@ class PegSolitaireViewModel extends ChangeNotifier {
       MoveRecord(from: from, to: to, timestamp: DateTime.now()),
     );
 
-    AudioService.instance.playJump(); //Reproducir sonido de salto
+    _audioService?.playJump(); //Reproducir sonido de salto
 
     AppLogger.info(
       'Salto ejecutado con éxito: $from -> $to | Clavijas restantes: $_remainingPegs',
@@ -100,7 +101,7 @@ class PegSolitaireViewModel extends ChangeNotifier {
 
       _persistCompletedGame();
 
-      AudioService.instance.playGameOver();
+      _audioService?.playGameOver();
 
       AppLogger.info(
         '¡VICTORIA! Partida completada en $_moveCount movimientos.',
@@ -115,7 +116,7 @@ class PegSolitaireViewModel extends ChangeNotifier {
 
       _persistCompletedGame();
 
-      AudioService.instance.playGameOver(); //Reproducir sonido perder partida
+      _audioService?.playGameOver(); //Reproducir sonido perder partida
 
       AppLogger.warning(
         'Fin de juego por bloqueo. No existen movimientos válidos.',
@@ -256,6 +257,7 @@ class PegSolitaireViewModel extends ChangeNotifier {
   PegSolitaireViewModel({
     required IGameHistoryRepository this._historyRepository,
     required PreferencesService this._preferencesService,
+    this._audioService,
   }) {
     initializeBoard();
   }
@@ -315,7 +317,7 @@ class PegSolitaireViewModel extends ChangeNotifier {
       if (tappedType == CellType.occupiedPeg) {
         _selectedPosition = pos;
 
-        AudioService.instance.playSelect(); //Reproducir sonido de seleccionar
+        _audioService?.playSelect(); //Reproducir sonido de seleccionar
         _triggerHapticFeedback();
 
         notifyListeners();
@@ -334,7 +336,7 @@ class PegSolitaireViewModel extends ChangeNotifier {
     // Transición 1.2: Pulsar sobre otra clavija propia -> Alternar selección
     if (tappedType == CellType.occupiedPeg) {
       _selectedPosition = pos;
-      AudioService.instance.playSelect(); //Reproducir sonido de seleccionar
+      _audioService?.playSelect(); //Reproducir sonido de seleccionar
       _triggerHapticFeedback();
       notifyListeners();
       return;
