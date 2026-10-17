@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_laboratorio/models/board_position.dart';
 import 'package:flutter_laboratorio/services/audio_service.dart';
+import 'package:flutter/services.dart';
 
 import '../core/enums/cell_type.dart';
 
@@ -291,6 +292,18 @@ class PegSolitaireViewModel extends ChangeNotifier {
     return _board[row][col];
   }
 
+  void _triggerHapticFeedback({bool forMove = false}) {
+    if (!(_preferencesService?.isHapticsEnabled ?? true)) {
+      return;
+    }
+
+    if (forMove) {
+      HapticFeedback.lightImpact();
+    } else {
+      HapticFeedback.selectionClick();
+    }
+  }
+
   void onCellTapped(BoardPosition pos) {
     if (_isGameOver) {
       return;
@@ -303,6 +316,7 @@ class PegSolitaireViewModel extends ChangeNotifier {
         _selectedPosition = pos;
 
         AudioService.instance.playSelect(); //Reproducir sonido de seleccionar
+        _triggerHapticFeedback();
 
         notifyListeners();
       }
@@ -321,6 +335,7 @@ class PegSolitaireViewModel extends ChangeNotifier {
     if (tappedType == CellType.occupiedPeg) {
       _selectedPosition = pos;
       AudioService.instance.playSelect(); //Reproducir sonido de seleccionar
+      _triggerHapticFeedback();
       notifyListeners();
       return;
     }
@@ -330,6 +345,8 @@ class PegSolitaireViewModel extends ChangeNotifier {
         _saveBoardSnapshot();
 
         _executeMove(origin, pos);
+        _triggerHapticFeedback(forMove: true);
+
         _selectedPosition = null; // Regreso automático a IDLE tras el salto
         _evaluateGameTermination();
         notifyListeners();

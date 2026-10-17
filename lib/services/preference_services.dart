@@ -15,12 +15,15 @@ class PreferencesService {
   // Claves para almacenar las preferencias.
   static const String _keySoundEnabled = 'sound_enabled';
   static const String _keyShakeEnabled = 'shake_enabled';
+  static const String _keyHapticsEnabled = 'haptics_enabled';
   static const String _keyBestScore = 'best_score';
 
   // Obtener las preferencias guardadas.
   bool get isSoundEnabled => _prefs.getBool(_keySoundEnabled) ?? true;
 
   bool get isShakeEnabled => _prefs.getBool(_keyShakeEnabled) ?? true;
+
+  bool get isHapticsEnabled => _prefs.getBool(_keyHapticsEnabled) ?? true;
 
   int get bestRemainingPegs => _prefs.getInt(_keyBestScore) ?? 32;
 
@@ -33,6 +36,13 @@ class PreferencesService {
   Future<bool> setShakeEnabled(bool enabled) async {
     AppLogger.info('PreferencesService: Agitación configurada en $enabled');
     return await _prefs.setBool(_keyShakeEnabled, enabled);
+  }
+
+  Future<bool> setHapticsEnabled(bool enabled) async {
+    AppLogger.info(
+      'PreferencesService: Respuesta háptica configurada en $enabled',
+    );
+    return await _prefs.setBool(_keyHapticsEnabled, enabled);
   }
 
   Future<bool> setBestRemainingPegs(int score) async {

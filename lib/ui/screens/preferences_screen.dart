@@ -13,6 +13,7 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
 
   bool _soundEnabled = true;
   bool _shakeEnabled = true;
+  bool _hapticsEnabled = true;
   int _bestScore = 32;
   bool _isLoading = true;
 
@@ -32,6 +33,7 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
       setState(() {
         _soundEnabled = preferences.isSoundEnabled;
         _shakeEnabled = preferences.isShakeEnabled;
+        _hapticsEnabled = preferences.isHapticsEnabled;
         _bestScore = preferences.bestRemainingPegs;
         _isLoading = false;
       });
@@ -67,6 +69,17 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
 
     setState(() {
       _shakeEnabled = value;
+    });
+  }
+
+  Future<void> _toggleHaptics(bool value) async {
+    final preferences = await _preferencesFuture;
+    await preferences.setHapticsEnabled(value);
+
+    if (!mounted) return;
+
+    setState(() {
+      _hapticsEnabled = value;
     });
   }
 
@@ -108,6 +121,7 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
                   value: _soundEnabled,
                   onChanged: _toggleSound,
                 ),
+
                 SwitchListTile(
                   title: const Text('Agitación del dispositivo'),
                   subtitle: const Text(
@@ -117,6 +131,17 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
                   value: _shakeEnabled,
                   onChanged: _toggleShake,
                 ),
+
+                SwitchListTile(
+                  title: const Text('Respuesta háptica'),
+                  subtitle: const Text(
+                    'Activar o desactivar la vibración durante las interacciones.',
+                  ),
+                  secondary: const Icon(Icons.touch_app),
+                  value: _hapticsEnabled,
+                  onChanged: _toggleHaptics,
+                ),
+
                 const Divider(height: 32),
                 const Text(
                   'Puntaje',

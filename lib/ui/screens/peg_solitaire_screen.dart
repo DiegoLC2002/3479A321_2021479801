@@ -4,6 +4,7 @@ import 'package:flutter_laboratorio/models/board_position.dart';
 import 'package:flutter_laboratorio/viewmodels/peg_solitaire_view_model.dart';
 import 'package:flutter_laboratorio/services/shake_detector_service.dart';
 import 'package:flutter_laboratorio/services/preference_services.dart';
+import 'package:flutter_laboratorio/services/screenshot_service.dart';
 
 import '../widgets/peg_cell.dart';
 import '../screens/rules_screen.dart';
@@ -22,6 +23,8 @@ class PegSolitaireScreen extends StatefulWidget {
 
 class _PegSolitaireScreenState extends State<PegSolitaireScreen> {
   ShakeDetectorService? _shakeDetector;
+
+  final GlobalKey _boardBoundaryKey = GlobalKey();
 
   @override
   void initState() {
@@ -150,7 +153,24 @@ class _PegSolitaireScreenState extends State<PegSolitaireScreen> {
                     '${vm.moveCount} movimientos dejando solo '
                     '${vm.remainingPegs} piezas!';
 
-                await SharePlus.instance.share(ShareParams(text: message));
+                final imagePath = await ScreenshotService.captureWidgetToImage(
+                  _boardBoundaryKey,
+                );
+
+                if (!context.mounted) return;
+
+                if (imagePath == null) {
+                  AppLogger.warning(
+                    'No se pudo capturar el tablero. Se compartirá solo el texto.',
+                  );
+
+                  await SharePlus.instance.share(ShareParams(text: message));
+                  return;
+                }
+
+                await SharePlus.instance.share(
+                  ShareParams(text: message, files: [XFile(imagePath)]),
+                );
               },
             ),
 
@@ -197,7 +217,12 @@ class _PegSolitaireScreenState extends State<PegSolitaireScreen> {
             const Divider(height: 1),
 
             //Area de juego
-            Expanded(child: _gameBoard(context, vm)),
+            Expanded(
+              child: RepaintBoundary(
+                key: _boardBoundaryKey,
+                child: _gameBoard(context, vm),
+              ),
+            ),
 
             //Mensaje de finalizacion
             if (vm.isGameOver) _buildGameOverBanner(context, vm),
